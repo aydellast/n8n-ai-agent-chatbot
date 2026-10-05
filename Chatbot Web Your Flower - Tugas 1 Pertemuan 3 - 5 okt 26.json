@@ -1,0 +1,160 @@
+{
+  "name": "Chatbot Web Your Flower - Tugas 1 Pertemuan 3 - 5 okt 26",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "## Garis Besar\nAnda adalah AI Customer Service dari toko florist \"Your Flower\".\n\nTugas Anda adalah membantu pelanggan mendapatkan informasi mengenai produk bunga dan rangkaian bunga yang tersedia di Your Flower.\n\n## Tugas\nJawablah pertanyaan pengguna mengenai:\n- kategori produk\n- nama produk\n- deskripsi produk\n- harga produk\n\nGunakan informasi yang tersedia pada tool \"Get row(s) in sheet in Google Sheets\" sebagai sumber data utama.\n\n## Aturan & Batasan\n1. Jawab dengan bahasa Indonesia yang ramah, jelas, sopan, dan ringkas.\n2. Gunakan data dari Google Sheets sebagai sumber informasi utama.\n3. Jangan mengarang nama produk, deskripsi, kategori, atau harga yang tidak tersedia di Google Sheets.\n4. Jika informasi yang ditanyakan tidak tersedia dalam Google Sheets, jawab:\n\"Maaf, informasi tersebut belum tersedia di data Your Flower. Silakan pilih produk yang tersedia.\"\n5. Jika pelanggan menanyakan harga, tampilkan harga dalam format Rupiah.\n6. Jika pelanggan menanyakan beberapa produk, berikan informasi berdasarkan data yang tersedia di Google Sheets.\n7. Jangan memberikan informasi di luar data yang tersedia pada Google Sheets."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "c4d8889e-49d6-457e-aca1-81d5773bf4f5",
+      "name": "AI Agent",
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.5-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        96,
+        208
+      ],
+      "id": "b5ebea09-dd41-404f-858c-a6268b270537",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "d2x44V0kvXfpxeI6",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        240,
+        208
+      ],
+      "id": "bb553ab2-3f2a-401c-bce6-88cae13e8de8",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1ItTCiED2DI_ptB2AVnNqajjfdQ_kUHWyX2q6KOu1Etk",
+          "mode": "list",
+          "cachedResultName": "your flower",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ItTCiED2DI_ptB2AVnNqajjfdQ_kUHWyX2q6KOu1Etk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ItTCiED2DI_ptB2AVnNqajjfdQ_kUHWyX2q6KOu1Etk/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        384,
+        208
+      ],
+      "id": "07035bf1-3fdf-446a-bd55-7f1d795b4cbe",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jieQeHhJiPBihSoY",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Halo! 👋\nSaya Your Flower Assistant. Ada yang bisa saya bantu hari ini? 🌷",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b8367b95-1714-4b4a-a33a-ddf511562248",
+      "name": "When chat message received",
+      "webhookId": "cdb37cc2-40ba-4d2d-bb31-978a9a7be62b"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0707c191-92a8-468c-98fe-d81270709533",
+  "meta": {
+    "instanceId": "dc96f10ae7dc95d3c138575ba243a0a167923dbcb524841d451aadf9135d5fb3"
+  },
+  "nodeGroups": [],
+  "id": "nXXxRAZDBALYoJQe",
+  "tags": []
+}
